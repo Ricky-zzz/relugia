@@ -1,9 +1,8 @@
-<?= $this->extend('layouts/main') ?>
+<?= $this->extend('layouts/airline') ?>
 <?= $this->section('content') ?>
 
 <?php
 $routeFields = [
-    ['aid', 'Airline', 'select', array_column($airlines, 'airline_name', 'id')],
     ['oapid', 'Origin Airport', 'select', array_column($airports, 'airport_name', 'id')],
     ['dapid', 'Destination Airport', 'select', array_column($airports, 'airport_name', 'id')],
     ['acid', 'Aircraft', 'select', array_column($aircrafts, 'model', 'id')],
@@ -13,6 +12,7 @@ $routeFields = [
 
 <div class="d-flex flex-grow-1 w-100 overflow-hidden">
     <!-- Sidebar Filter -->
+
     <aside class="bg-light border-end ps-2" style="width: 280px; flex-shrink: 0;">
         <div class="card shadow-sm mx-2 my-3">
             <div class="card-body p-3">
@@ -20,12 +20,6 @@ $routeFields = [
                 include __DIR__ . '/../partials/filter.php';
 
                 renderFilterSidebar('/admin/flightroute', [
-                    [
-                        'name' => 'aid',
-                        'label' => 'Airline',
-                        'type' => 'select',
-                        'options' => array_column($airlines, 'airline_name', 'id'),
-                    ],
                     [
                         'name' => 'oapid',
                         'label' => 'Origin Airport',
@@ -80,15 +74,14 @@ $routeFields = [
                     $deleteAction = "/admin/flightroute/delete";
                     $editRoute = "/admin/flightroute";
                     $rows = $routes;
-                    $role = 'admin';
-
+                    $role = 'airline';
 
                     include __DIR__ . '/../partials/table.php';
                     ?>
 
                     <?php
                     $fields = $routeFields;
-                    $entity = 'Flightroute';
+                    $entity = 'Flight route';
                     include __DIR__ . '/../partials/edit_form.php';
                     ?>
 

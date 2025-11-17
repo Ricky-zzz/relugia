@@ -1,4 +1,4 @@
-<?= $this->extend('layouts/main') ?>
+<?= $this->extend('layouts/airline') ?>
 <?= $this->section('content') ?>
 
 <div class="d-flex flex-grow-1 w-100 overflow-auto">
@@ -15,7 +15,7 @@
             <!-- Header -->
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h2 class="mb-0">Seats for Flight #<?= htmlspecialchars($schedule['id']) ?></h2>
-                <a href="/admin/flightschedule/<?= $schedule['frid'] ?>" class="btn btn-secondary">
+                <a href="/airline/flightschedule/<?= $schedule['frid'] ?>" class="btn btn-secondary">
                     ← Back to Flight Schedule
                 </a>
             </div>

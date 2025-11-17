@@ -47,4 +47,16 @@ $routes->post('/admin/flightschedule/delete/(:num)', 'FlightScheduleController::
 
 $routes->get('/admin/seat/(:num)', 'SeatController::index/$1');
 
+$routes->get('/airline/flightroute', 'FlightRouteController::index');
+$routes->post('/airline/flightroute/store', 'FlightRouteController::store');
+$routes->post('/airline/flightroute/update/(:num)', 'FlightRouteController::update/$1');
+$routes->post('/airline/flightroute/delete/(:num)', 'FlightRouteController::destroy/$1');
+
+$routes->get('/airline/flightschedule/(:num)', 'FlightScheduleController::index/$1');
+$routes->post('/airline/flightschedule/store', 'FlightScheduleController::store');
+$routes->post('/airline/flightschedule/update/(:num)', 'FlightScheduleController::update/$1');
+$routes->post('/airline/flightschedule/delete/(:num)', 'FlightScheduleController::destroy/$1');
+
+$routes->get('/airline/seat/(:num)', 'SeatController::index/$1');
+
 

@@ -8,6 +8,8 @@ use App\Models\SeatModel;
 use App\Models\FlightScheduleModel;
 use App\Models\FlightRouteModel;
 use App\Models\AirportModel;
+use App\Libraries\Auth;
+
 
 class SeatController extends BaseController
 {
@@ -18,6 +20,8 @@ class SeatController extends BaseController
 
     protected $aircraftModel;
 
+    protected $auth;
+
     public function __construct()
     {
         $this->seatModel = new SeatModel();
@@ -25,6 +29,7 @@ class SeatController extends BaseController
         $this->flightRouteModel = new FlightRouteModel();
         $this->airportModel = new AirportModel();
         $this->aircraftModel = new AircraftModel();
+        $this->auth = new Auth();
     }
 
     public function index($fid = null)
@@ -70,7 +75,11 @@ class SeatController extends BaseController
         $totalPages = ceil($totalSeats / $limit);
         $seats = array_slice($allSeats, $offset, $limit);
 
-        return view('admin/seat', [
+        $role = $this->auth->isAdmin() ? 'admin' : 'airline';
+        $view_target = $role . '/seat';
+
+
+        return view($view_target, [
             'fid' => $fid,
             'aircraft' => $aircraft,
             'schedule' => $schedule,

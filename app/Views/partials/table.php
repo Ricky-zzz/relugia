@@ -36,14 +36,14 @@
                         </button>
                         <!-- Custom button -->
                         <?php if (isset($entity) && strtolower($entity) === 'flight route'): ?>
-                            <a href="/admin/flightschedule/<?= $row['id'] ?>" class="btn btn-sm btn-outline-success"
+                            <a href="/<?= $role ?>/flightschedule/<?= $row['id'] ?>" class="btn btn-sm btn-outline-success"
                                 title="Manage Schedules">
                                 <i class="bi bi-airplane"></i>
                             </a>
                         <?php endif; ?>
 
                         <?php if (isset($entity) && strtolower($entity) === 'flight schedule'): ?>
-                            <a href="/admin/seat/<?= $row['id'] ?>" class="btn btn-sm btn-outline-warning" title="Manage Schedules">
+                            <a href="/<?= $role ?>/seat/<?= $row['id'] ?>" class="btn btn-sm btn-outline-warning" title="Manage Schedules">
                                 <i class="bi bi-ticket"></i>
                             </a>
                         <?php endif; ?>

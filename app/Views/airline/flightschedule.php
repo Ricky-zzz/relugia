@@ -1,11 +1,10 @@
-<?= $this->extend('layouts/main') ?>
+<?= $this->extend('layouts/airline') ?>
 <?= $this->section('content') ?>
 
 <?php
-// Schedule fields for Add/Edit forms
+// Schedule fields 
 $scheduleFields = [
     ['frid', '', 'hidden'],
-    ['auid', 'Schedule Created By', 'select', array_column($airlineUsers ?? [], 'user', 'id')],
     ['date_departure', 'Departure Date', 'date'],
     ['time_departure', 'Departure Time', 'time'],
     ['date_arrival', 'Arrival Date', 'date'],
@@ -136,9 +135,9 @@ $scheduleFields = [
                     ];
 
                     $entity = 'Flight Schedule';
-                    $deleteAction = "/admin/flightschedule/delete";
-                    $editRoute = "/admin/flightschedule";
-                    $role = 'admin';
+                    $deleteAction = "/airline/flightschedule/delete";
+                    $editRoute = "/airline/flightschedule";
+                    $role = 'airline';
 
                     include __DIR__ . '/../partials/table.php';
 
@@ -170,7 +169,7 @@ $scheduleFields = [
 <?php
 $modalId = "addScheduleModal";
 $title = "Add Flight Schedule";
-$action = "/admin/flightschedule/store";
+$action = "/airline/flightschedule/store";
 $fields = $scheduleFields;
 $values = ['frid' => $selectedRoute['id'] ?? null];
 include __DIR__ . '/../partials/modal_form.php';

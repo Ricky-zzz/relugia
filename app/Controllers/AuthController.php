@@ -30,7 +30,7 @@ class AuthController extends BaseController
                 $auth->login([
                     'id'         => $user['id'],
                     'name'       => $user['user'],
-                    'role'       => $user['type'],   
+                    'role'       => 'airlineUser',   
                     'airline_id' => $user['aid']
                 ]);
                

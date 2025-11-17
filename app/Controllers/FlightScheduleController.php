@@ -79,13 +79,11 @@ class FlightScheduleController extends BaseController
 
         $airlineUsers = $this->airlineUserModel->findSpecificUsers($selectedRoute['aid'] ?? null);
 
-        // Add airline name safely
         foreach ($routes as &$route) {
             $airline = $this->airlineModel->find($route['aid'] ?? null);
             $route['airline_name'] = $airline['airline_name'] ?? 'Unknown Airline';
         }
 
-        // View selection
         if ($this->auth->isAdmin()) {
             return view('admin/flightschedule', compact(
                 'schedules',
@@ -149,7 +147,6 @@ class FlightScheduleController extends BaseController
 
         $data['status'] = $data['status'] ?? 'scheduled';
 
-        // Airline restriction
         if ($this->auth->isAirlineUser()) {
             $route = $this->flightRouteModel->find($data['frid']);
             if (!$route || $route['aid'] != $this->auth->airlineId()) {
