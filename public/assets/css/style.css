@@ -97,6 +97,24 @@
     }
 }
 
+/* Add to your style.css or <style> */
+@media (max-width: 1366px) {
+  .scale-down {
+    transform: scale(0.85);   
+    transform-origin: top left; 
+    width: 117.6%;             
+  }
+}
+
+@media (max-width: 1200px) {
+  .scale-down {
+    transform: scale(0.8); 
+    transform-origin: top left;
+    width: 125%;               
+  }
+}
+
+
 /* Animation enhancements */
 .nav-link {
     transition: all 0.3s ease;
@@ -137,4 +155,10 @@
 
 .table-responsive::-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;
+}
+.tooltip-inner {
+    text-align: left !important;      /* left-align text */
+    white-space: pre-line !important; /* preserve line breaks */
+    max-width: 300px;                  /* increase width so it’s not squished */
+    font-size: 0.9rem;                 /* optional: adjust font size */
 }

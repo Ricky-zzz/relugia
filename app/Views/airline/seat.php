@@ -89,7 +89,7 @@
 
             <!-- VISUAL VIEW -->
             <div x-show="view === 'visual'" x-transition>
-
+                <h4 class="text-center mb-3">Aircraft Layout</h4>
                 <!-- Legend -->
                 <div class="d-flex mb-3 gap-3 justify-content-center">
                     <div class="d-flex align-items-center">
@@ -104,11 +104,15 @@
                         <div class="me-2" style="width:20px;height:20px;background-color:#ffc107"></div>
                         Economy
                     </div>
+                    <div class="d-flex align-items-center">
+                        <div class="me-2" style="width:20px;height:20px;background-color:red"></div>
+                        Booked
+                    </div>
                 </div>
 
                 <!-- Aircraft Layout -->
                 <div class="d-flex justify-content-center">
-                    <div class="border p-3 bg-light overflow-auto" style="max-height:700px;min-width:300px;">
+                    <div class="border p-3 bg-light overflow-auto" style="min-width:300px;">
 
                         <template x-for="(row, index) in layout" :key="row.rowNum">
                             <div class="mb-1">
@@ -124,12 +128,29 @@
                                         <div class="d-flex ms-3">
                                             <template x-for="seat in cluster">
                                                 <div class="border rounded text-center" :class="[
-        'border-' + seat.color,
-        seat.status === 'booked' ? 'bg-danger text-white border-danger' : ''
-     ]" style="width:35px;height:35px;margin:3px;display:flex;align-items:center;justify-content:center;">
+                                                        'border-' + seat.color,
+                                                        seat.status === 'booked' ? 'bg-danger text-white border-danger' : ''
+                                                     ]"
+                                                    style="width:40px;height:40px;margin:4px;display:flex;align-items:center;justify-content:center;"
+                                                :title="`
+                                                <div class='text-center p-2'>
+                                                    <div class='text-center text-capitalize fs-5'>
+                                                        <strong>Ticket Info</strong>
+                                                    </div>
+
+                                                    <div class='text-start'>
+                                                        <strong>Ticket No:</strong> <span class='font-monospace'>${seat.ticket_no ?? 'N/A'}</span><br>
+                                                        <strong>Seat:</strong>  <span class='font-monospace'>${seat.name}</span><br>
+                                                        <strong>Class:</strong>  <span class='font-monospace text-capitalize'>${seat.class}</span><br>
+                                                        <strong>Status:</strong>  <span class='font-monospace text-uppercase ${seat.status === 'booked' ? 'text-danger fw-bold' : 'text-success fw-bold'}'>${seat.status}</span><br>
+                                                        <strong>Passenger:</strong> <span class='font-monospace'> ${seat.passenger_name ?? 'Unbooked'}</span>
+                                                    </div>
+                                                </div>
+                                                `"
+
+                                                    data-bs-toggle="tooltip" data-bs-placement="top">
                                                     <span x-text="seat.name"></span>
                                                 </div>
-
                                             </template>
                                         </div>
                                     </template>
@@ -141,9 +162,9 @@
 
                                 <!-- CLASS SEPARATOR (same behavior as in modal) -->
                                 <template x-if="
-            index < layout.length - 1
-            && getRowClass(index) !== getRowClass(index + 1)
-        ">
+                                                index < layout.length - 1
+                                                && getRowClass(index) !== getRowClass(index + 1)
+                                            ">
                                     <div class="d-flex my-2 justify-content-center align-items-center"
                                         style="height:20px;">
                                         <div style="width:80%; border-top:2px dashed #999;"></div>
@@ -164,83 +185,97 @@
 </div>
 
 <script>
-    function seatViewer() {
-        return {
-            view: 'table',
+function seatViewer() {
+    return {
+        view: 'table',
+        clusters: [],
+        first: 0,
+        business: 0,
+        economy: 0,
+        seatsData: [],
+        layout: [],
 
-            clusters: [],
-            first: 0,
-            business: 0,
-            economy: 0,
-            seatsData: [],
-            layout: [],
+        initData(colSizes, first, business, economy, seatsData) {
+            this.clusters = colSizes.split('-').map(Number);
+            this.first = first;
+            this.business = business;
+            this.economy = economy;
+            this.seatsData = seatsData;
 
-            initData(colSizes, first, business, economy, seatsData) {
-                this.clusters = colSizes.split('-').map(Number);
-                this.first = first;
-                this.business = business;
-                this.economy = economy;
-                this.seatsData = seatsData;
+            this.layout = this.generate();
+        },
 
-                this.layout = this.generate();
-            },
+        generate() {
+            let layout = [];
+            let totalCols = this.clusters.reduce((a, b) => a + b, 0);
 
-            generate() {
-                let layout = [];
-                let totalCols = this.clusters.reduce((a, b) => a + b, 0);
+            let sections = [
+                { seats: this.first, color: 'info' },
+                { seats: this.business, color: 'success' },
+                { seats: this.economy, color: 'warning' },
+            ];
 
-                let sections = [
-                    { seats: this.first, color: 'info' },
-                    { seats: this.business, color: 'success' },
-                    { seats: this.economy, color: 'warning' },
-                ];
+            let rowNum = 1;
 
-                let rowNum = 1;
+            sections.forEach(sec => {
+                let rows = Math.ceil(sec.seats / totalCols);
 
-                sections.forEach(sec => {
-                    let rows = Math.ceil(sec.seats / totalCols);
+                for (let r = 0; r < rows; r++) {
+                    let rowClusters = [];
+                    let offset = 0;
 
-                    for (let r = 0; r < rows; r++) {
-                        let rowClusters = [];
-                        let offset = 0;
+                    this.clusters.forEach(size => {
+                        let letters = [];
 
-                        this.clusters.forEach(size => {
-                            let letters = [];
+                        for (let i = 0; i < size; i++) {
+                            letters.push(String.fromCharCode(65 + offset + i));
+                        }
+                        offset += size;
 
-                            for (let i = 0; i < size; i++) {
-                                letters.push(String.fromCharCode(65 + offset + i));
-                            }
-                            offset += size;
+                        rowClusters.push(
+                            letters.map(letter => {
+                                let seatName = letter + rowNum;
 
-                            rowClusters.push(
-                                letters.map(letter => {
-                                    let seatName = letter + rowNum;
+                                let found = this.seatsData.find(s => s.seat_name === seatName);
 
-                                    let found = this.seatsData.find(s => s.seat_name === seatName);
+                                return {
+                                    name: seatName,
+                                    status: found ? found.status : 'unknown',
+                                    class: found ? found.class : '',
+                                    color: sec.color,
+                                    ticket_no: found ? found.ticket_no : null,
+                                    passenger_name: found ? found.passenger_name : null
+                                };
+                            })
+                        );
+                    });
 
-                                    return {
-                                        name: seatName,
-                                        status: found ? found.status : 'unknown',
-                                        class: found ? found.class : '',
-                                        color: sec.color
-                                    };
-                                })
-                            );
-                        });
+                    layout.push({ rowNum, rowClusters });
+                    rowNum++;
+                }
+            });
 
-                        layout.push({ rowNum, rowClusters });
-                        rowNum++;
-                    }
-                });
+            return layout;
+        },
 
-                return layout;
-            },
+        getRowClass(i) {
+            return this.layout[i].rowClusters[0][0].color;
+        },
+    };
+}
 
-            getRowClass(i) {
-                return this.layout[i].rowClusters[0][0].color;
-            },
-        };
-    }
+document.addEventListener('DOMContentLoaded', function () {
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl, {
+            html: true,        
+            placement: 'right',    
+            template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
+        });
+    });
+});
+
 </script>
+
 
 <?= $this->endSection() ?>

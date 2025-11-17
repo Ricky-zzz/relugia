@@ -116,7 +116,7 @@ CREATE TABLE IF NOT EXISTS `tblairlineuser` (
   CONSTRAINT `tblairlineuser_ibfk_1` FOREIGN KEY (`aid`) REFERENCES `tblairline` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table lugia.tblairlineuser: ~19 rows (approximately)
+-- Dumping data for table lugia.tblairlineuser: ~20 rows (approximately)
 DELETE FROM `tblairlineuser`;
 INSERT INTO `tblairlineuser` (`id`, `user`, `pass`, `type`, `aid`) VALUES
 	(1, 'ceb_admin', 'ceb12345', 'admin', 1),
@@ -241,7 +241,7 @@ CREATE TABLE IF NOT EXISTS `tblflightschedule` (
   CONSTRAINT `tblflightschedule_ibfk_2` FOREIGN KEY (`frid`) REFERENCES `tblflightroute` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table lugia.tblflightschedule: ~0 rows (approximately)
+-- Dumping data for table lugia.tblflightschedule: ~2 rows (approximately)
 DELETE FROM `tblflightschedule`;
 INSERT INTO `tblflightschedule` (`id`, `auid`, `frid`, `date_departure`, `time_departure`, `date_arrival`, `time_arrival`, `status`, `first_price`, `business_price`, `economy_price`) VALUES
 	(25, 1, 1, '2025-11-17', '20:08:00', '2025-11-18', '20:08:00', 'scheduled', 1000.00, 1000.00, 1000.00),
@@ -704,7 +704,7 @@ CREATE TABLE IF NOT EXISTS `tbluser` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table lugia.tbluser: ~10 rows (approximately)
+-- Dumping data for table lugia.tbluser: ~11 rows (approximately)
 DELETE FROM `tbluser`;
 INSERT INTO `tbluser` (`id`, `user`, `pass`, `role`) VALUES
 	(11, 'mark_admin', 'admin123', 'admin'),

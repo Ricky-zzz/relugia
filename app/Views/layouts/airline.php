@@ -22,14 +22,14 @@
 </head>
 
 <body>
- <div class="d-flex flex-column w-100 min-vh-100">
+  <div class="scale-down">
+    <div class="d-flex flex-column w-100 min-vh-100">
         <header class="w-100">
             <?php include __DIR__ . '/../partials/airline_header.php'; ?>
         </header>
         <?= $this->renderSection('content') ?>
-
-
     </div>
+  </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     
 </body>

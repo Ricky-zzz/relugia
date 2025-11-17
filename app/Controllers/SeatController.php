@@ -62,8 +62,10 @@ class SeatController extends BaseController
         $offset = ($page - 1) * $limit;
 
         $allSeats = $this->seatModel
+            ->select('tblseats.*, passenger.name as passenger_name')
+            ->join('passenger', 'passenger.id = tblseats.passenger_id', 'left')
             ->where('fid', $fid)
-            ->orderBy("CASE class
+            ->orderBy("CASE tblseats.class
         WHEN 'First' THEN 1
         WHEN 'Business' THEN 2
         WHEN 'Economy' THEN 3
@@ -71,13 +73,13 @@ class SeatController extends BaseController
             ->orderBy('seat_name', 'ASC')
             ->findAll();
 
+
         $totalSeats = count($allSeats);
         $totalPages = ceil($totalSeats / $limit);
         $seats = array_slice($allSeats, $offset, $limit);
 
         $role = $this->auth->isAdmin() ? 'admin' : 'airline';
         $view_target = $role . '/seat';
-
 
         return view($view_target, [
             'fid' => $fid,

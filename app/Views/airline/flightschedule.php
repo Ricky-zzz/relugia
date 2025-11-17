@@ -28,7 +28,7 @@ $scheduleFields = [
 
 <div class="d-flex flex-grow-1 w-100 overflow-hidden">
     <!-- Sidebar Filter -->
-    <aside class="bg-light border-end ps-2" style="width: 280px; flex-shrink: 0;">
+    <aside class="bg-light border-end ps-2" >
         <div class="card shadow-sm mx-2 my-3">
             <div class="card-body p-3">
                 <?php
