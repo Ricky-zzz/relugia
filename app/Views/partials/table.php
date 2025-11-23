@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Variables expected:
  * @var array $tableHeaders  // e.g. ['IATA', 'ICAO', 'Airline', 'Callsign', 'Region']
@@ -23,7 +24,14 @@
             <?php foreach ($rows as $row): ?>
                 <tr>
                     <?php foreach ($fields as $field): ?>
-                        <td><?= esc($row[$field] ?? '') ?></td>
+                        <?php
+                        $value = $row[$field] ?? '';
+
+                        if ($field === 'round_trip') {
+                            $value = ($value == 1) ? 'Yes' : 'No';
+                        }
+                        ?>
+                        <td><?= esc($value) ?></td>
                     <?php endforeach; ?>
                     <td class="text-nowrap">
                         <!-- Edit button -->
@@ -49,8 +57,8 @@
                         <?php endif; ?>
 
                         <?php if (isset($entity) && strtolower($entity) === 'aircraft'): ?>
-                            <button class="btn btn-sm btn-outline-warning" 
-                                       @click="openSeatView(<?= htmlspecialchars(json_encode($row), ENT_QUOTES) ?>)">
+                            <button class="btn btn-sm btn-outline-warning"
+                                @click="openSeatView(<?= htmlspecialchars(json_encode($row), ENT_QUOTES) ?>)">
                                 <i class="bi bi-airplane"></i>
                             </button>
 

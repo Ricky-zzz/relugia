@@ -1,7 +1,8 @@
 <?= $this->extend('layouts/airline') ?>
 <?= $this->section('content') ?>
 
-<div class="d-flex flex-grow-1 w-100 overflow-auto">
+<div x-data="pageData()" class="d-flex flex-grow-1 w-100 overflow-auto">
+
     <main class="flex-grow-1 p-4 w-100" style="min-width:0;">
 
         <div x-data="seatViewer()" x-init='initData(
@@ -10,7 +11,7 @@
                 <?= (int) $aircraft['business_class'] ?>,
                 <?= (int) $aircraft['economy_class'] ?>,
                 <?= json_encode($allSeats, JSON_HEX_APOS | JSON_HEX_QUOT) ?>
-            )'>
+        )'>
 
             <!-- Header -->
             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -33,7 +34,7 @@
                 <?= htmlspecialchars($schedule['time_arrival']) ?>
             </p>
 
-            <!-- View Toggle -->
+            <!-- Toggle -->
             <div class="mb-3">
                 <button class="btn btn-primary" @click="view = (view === 'table' ? 'visual' : 'table')">
                     <span x-show="view === 'table'">Show Aircraft View</span>
@@ -41,10 +42,8 @@
                 </button>
             </div>
 
-
             <!-- TABLE VIEW -->
             <div x-show="view === 'table'">
-
                 <?php if (!empty($seats)): ?>
                     <div class="table-responsive">
                         <table class="table table-bordered table-striped">
@@ -54,6 +53,8 @@
                                     <th>Seat</th>
                                     <th>Class</th>
                                     <th>Status</th>
+                                    <th>Seat Price</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -63,117 +64,64 @@
                                         <td><?= htmlspecialchars($seat['seat_name']) ?></td>
                                         <td><?= htmlspecialchars($seat['class']) ?></td>
                                         <td><?= htmlspecialchars($seat['status']) ?></td>
+                                        <td><?= 'P ' . htmlspecialchars($seat['seat_price']) ?></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary"
+                                                @click="openEdit(
+                                                    <?= htmlspecialchars(json_encode($seat), ENT_QUOTES) ?>,
+                                                    '/airline/seat/update/<?= $seat['id'] ?>'
+                                                )">
+                                                Edit
+                                            </button>
+                                        </td>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
                     </div>
-
-                    <?php if ($totalPages > 1): ?>
-                        <nav class="mt-3">
-                            <ul class="pagination">
-                                <?php for ($p = 1; $p <= $totalPages; $p++): ?>
-                                    <li class="page-item <?= $p === $page ? 'active' : '' ?>">
-                                        <a class="page-link" href="?page=<?= $p ?>"><?= $p ?></a>
-                                    </li>
-                                <?php endfor; ?>
-                            </ul>
-                        </nav>
-                    <?php endif; ?>
-
                 <?php else: ?>
                     <p>No seats found.</p>
                 <?php endif; ?>
-
             </div>
 
             <!-- VISUAL VIEW -->
             <div x-show="view === 'visual'" x-transition>
                 <h4 class="text-center mb-3">Aircraft Layout</h4>
-                <!-- Legend -->
-                <div class="d-flex mb-3 gap-3 justify-content-center">
-                    <div class="d-flex align-items-center">
-                        <div class="me-2" style="width:20px;height:20px;background-color:#0d6efd"></div>
-                        First
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <div class="me-2" style="width:20px;height:20px;background-color:#198754"></div>
-                        Business
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <div class="me-2" style="width:20px;height:20px;background-color:#ffc107"></div>
-                        Economy
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <div class="me-2" style="width:20px;height:20px;background-color:red"></div>
-                        Booked
-                    </div>
-                </div>
 
-                <!-- Aircraft Layout -->
+                <!-- Layout -->
                 <div class="d-flex justify-content-center">
                     <div class="border p-3 bg-light overflow-auto" style="min-width:300px;">
 
                         <template x-for="(row, index) in layout" :key="row.rowNum">
                             <div class="mb-1">
-
-                                <!-- Single Seat Row -->
                                 <div class="d-flex justify-content-center align-items-center">
 
-                                    <!-- Row number left -->
                                     <div style="width:30px" class="me-2" x-text="row.rowNum"></div>
 
-                                    <!-- Seat clusters -->
                                     <template x-for="cluster in row.rowClusters">
                                         <div class="d-flex ms-3">
                                             <template x-for="seat in cluster">
-                                                <div class="border rounded text-center" :class="[
+                                                <div class="border rounded text-center"
+                                                    :class="[
                                                         'border-' + seat.color,
-                                                        seat.status === 'booked' ? 'bg-danger text-white border-danger' : ''
-                                                     ]"
-                                                    style="width:40px;height:40px;margin:4px;display:flex;align-items:center;justify-content:center;"
-                                                :title="`
-                                                <div class='text-center p-2'>
-                                                    <div class='text-center text-capitalize fs-5'>
-                                                        <strong>Ticket Info</strong>
-                                                    </div>
-
-                                                    <div class='text-start'>
-                                                        <strong>Ticket No:</strong> <span class='font-monospace'>${seat.ticket_no ?? 'N/A'}</span><br>
-                                                        <strong>Seat:</strong>  <span class='font-monospace'>${seat.name}</span><br>
-                                                        <strong>Class:</strong>  <span class='font-monospace text-capitalize'>${seat.class}</span><br>
-                                                        <strong>Status:</strong>  <span class='font-monospace text-uppercase ${seat.status === 'booked' ? 'text-danger fw-bold' : 'text-success fw-bold'}'>${seat.status}</span><br>
-                                                        <strong>Passenger:</strong> <span class='font-monospace'> ${seat.passenger_name ?? 'Unbooked'}</span>
-                                                    </div>
-                                                </div>
-                                                `"
-
-                                                    data-bs-toggle="tooltip" data-bs-placement="top">
+                                                        seat.status === 'booked'
+                                                        ? 'bg-danger text-white border-danger'
+                                                        : ''
+                                                    ]"
+                                                    style="width:40px;height:40px;margin:4px;display:flex;
+                                                           align-items:center;justify-content:center;cursor:pointer"
+                                                    @click="openEdit(seat, '/airline/seat/update/' + seat.id)">
                                                     <span x-text="seat.name"></span>
                                                 </div>
                                             </template>
                                         </div>
                                     </template>
 
-                                    <!-- Row number right -->
                                     <div style="width:30px" class="ms-2" x-text="row.rowNum"></div>
-
                                 </div>
-
-                                <!-- CLASS SEPARATOR (same behavior as in modal) -->
-                                <template x-if="
-                                                index < layout.length - 1
-                                                && getRowClass(index) !== getRowClass(index + 1)
-                                            ">
-                                    <div class="d-flex my-2 justify-content-center align-items-center"
-                                        style="height:20px;">
-                                        <div style="width:80%; border-top:2px dashed #999;"></div>
-                                    </div>
-                                </template>
 
                             </div>
                         </template>
-
 
                     </div>
                 </div>
@@ -181,10 +129,27 @@
 
         </div>
 
+        <!-- Reusable Edit Modal -->
+        <?= $this->include('partials/edit_seat') ?>
+
     </main>
 </div>
 
 <script>
+function pageData() {
+    return {
+        isOpen: false,
+        row: {},
+        action: "",
+
+        openEdit(data, url) {
+            this.row = structuredClone(data);
+            this.action = url;
+            this.isOpen = true;
+        }
+    };
+}
+
 function seatViewer() {
     return {
         view: 'table',
@@ -201,7 +166,6 @@ function seatViewer() {
             this.business = business;
             this.economy = economy;
             this.seatsData = seatsData;
-
             this.layout = this.generate();
         },
 
@@ -235,16 +199,17 @@ function seatViewer() {
                         rowClusters.push(
                             letters.map(letter => {
                                 let seatName = letter + rowNum;
-
                                 let found = this.seatsData.find(s => s.seat_name === seatName);
 
                                 return {
+                                    id: found?.id,
                                     name: seatName,
-                                    status: found ? found.status : 'unknown',
-                                    class: found ? found.class : '',
+                                    status: found?.status ?? 'available',
+                                    class: found?.class ?? '',
+                                    seat_price: found?.seat_price ?? '',
                                     color: sec.color,
-                                    ticket_no: found ? found.ticket_no : null,
-                                    passenger_name: found ? found.passenger_name : null
+                                    ticket_no: found?.ticket_no ?? null,
+                                    passenger_name: found?.passenger_name ?? null
                                 };
                             })
                         );
@@ -256,26 +221,9 @@ function seatViewer() {
             });
 
             return layout;
-        },
-
-        getRowClass(i) {
-            return this.layout[i].rowClusters[0][0].color;
-        },
+        }
     };
 }
-
-document.addEventListener('DOMContentLoaded', function () {
-    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl, {
-            html: true,        
-            placement: 'right',    
-            template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
-        });
-    });
-});
-
 </script>
-
 
 <?= $this->endSection() ?>

@@ -10,7 +10,7 @@ class SeatModel extends Model
     protected $primaryKey = 'id';
 
     protected $allowedFields = [
-        'fid', 'ticket_no', 'seat_name', 'class', 'status'
+        'fid', 'ticket_no', 'seat_name', 'class', 'status','seat_price'
     ];
 
     protected $useTimestamps = false;
