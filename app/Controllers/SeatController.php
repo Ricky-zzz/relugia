@@ -90,7 +90,17 @@ class SeatController extends BaseController
             'totalPages' => $totalPages,
             'page' => $page,
         ]);
-
     }
 
+    public function update($id = null)
+    {
+
+        $data = $this->request->getPost([
+            'status',
+            'seat_price',
+        ]);
+        $this->seatModel->update($id, $data);
+
+        return redirect()->back()->with('success', 'Seat data Updated Successfully!');
+    }
 }

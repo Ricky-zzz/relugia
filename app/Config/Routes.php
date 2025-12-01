@@ -58,5 +58,6 @@ $routes->post('/airline/flightschedule/update/(:num)', 'FlightScheduleController
 $routes->post('/airline/flightschedule/delete/(:num)', 'FlightScheduleController::destroy/$1');
 
 $routes->get('/airline/seat/(:num)', 'SeatController::index/$1');
+$routes->post('/airline/seat/update/(:num)', 'SeatController::update/$1');
 
 
