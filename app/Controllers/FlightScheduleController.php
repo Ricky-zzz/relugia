@@ -161,6 +161,13 @@ class FlightScheduleController extends BaseController
         $route = $this->flightRouteModel->find($data['frid']);
         $aircraftId = $route['acid'] ?? null;
 
+        // Generate carrier code: origin airport code + schedule id
+        $originAirport = $this->airportModel->find($route['oapid'] ?? null);
+        if ($originAirport && isset($originAirport['iata'])) {
+            $carrierCode = $originAirport['iata'] . $scheduleId;
+            $this->flightScheduleModel->update($scheduleId, ['carrier_code' => $carrierCode]);
+        }
+
         if ($aircraftId) {
             $this->seatService->generateSeats($scheduleId, $aircraftId);
         }

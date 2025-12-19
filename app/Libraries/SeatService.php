@@ -84,7 +84,8 @@ class SeatService
                         ? $basePrice * 1.4
                         : $basePrice;
 
-                    $ticketNo = str_pad($ticketCounter, 4, '0', STR_PAD_LEFT)
+                    $ticketNo = $schedule['carrier_code']
+                        . '-' . str_pad($ticketCounter, 3, '0', STR_PAD_LEFT)
                         . '-' . $seatName
                         . '-' . $classLetter;
 

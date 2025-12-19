@@ -11,7 +11,7 @@ class FlightScheduleModel extends Model
     protected $allowedFields = [
         'auid', 'frid', 'date_departure', 'time_departure',
         'date_arrival', 'time_arrival', 'status',
-        'first_price', 'business_price', 'economy_price'
+        'first_price', 'business_price', 'economy_price','carrier_code'
     ];
 
     /** Get schedules with related details and filters */
